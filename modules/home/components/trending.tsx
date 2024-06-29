@@ -8,18 +8,25 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 
-import { Movie } from "../types/types";
+import { useSetAtom } from "jotai";
+import { Movie } from "@/types/movie-type";
 import { Poppins } from "next/font/google";
+
+import { Bookmark } from "lucide-react";
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { loadingTrendingAtom } from "../atoms/home-atoms";
 
 const poppins = Poppins({ weight: "300", subsets: ["latin"] });
 
 export default function TrendindSection() {
   const [trendingMovies, setTrendingMovies] = useState<Movie[]>();
+  const setLoading = useSetAtom(loadingTrendingAtom)
 
   const fetchTrendingMovies = async () => {
     try {
@@ -33,6 +40,7 @@ export default function TrendindSection() {
         }
       );
       const data = response.data;
+      setLoading(false)
       return data.results;
     } catch (error) {
       console.log(error);
@@ -52,24 +60,34 @@ export default function TrendindSection() {
   }, []);
 
   return (
-    <Carousel className="w-full">
+    <Carousel className="w-full cursor-grab">
       <CarouselContent className="h-[650px]">
-        {trendingMovies?.map((movie) => {
+        {trendingMovies?.slice(0, 10)?.map((movie) => {
           return (
             <CarouselItem
               key={`${movie.id}`}
               className="relative flex items-end"
             >
-              <div className="p-20 flex flex-col gap-3">
-                <p className={`text-[48px] ${poppins.className}`}>
-                  {movie.title}
-                </p>
+              <div className={`p-4 sm:p-8 md:p-16 lg:p-20 flex flex-col gap-3 ${poppins.className}`}>
+                <p className="text-[30px] md:text-[48px]">{movie.title}</p>
                 <div className="flex gap-4 justify-start items-center">
                   <p>{`${movie.vote_average.toPrecision(2)}`}</p>
-                  <Badge className="bg-blue-400">Movie</Badge>
-                  <Badge className="bg-blue-400">{movie.original_language.toUpperCase()}</Badge>
+                  <p>{movie.release_date}</p>
+                  <Badge className="bg-primary">Movie</Badge>
+                  <Badge className="bg-primary">
+                    {movie.original_language.toUpperCase()}
+                  </Badge>
                 </div>
-                <p className="w-2/5 opacity-60">{movie.overview}</p>
+                <div className="w-[200px] sm:w-[300px] md:w-[500px] lg:w-[700px] xl:w-[900px]">
+                  <p className="opacity-70 text-sm hidden lg:block">{movie.overview}</p>
+                </div>
+                <div className="flex gap-4">
+                  <Link href={`/movie/${movie.id}`}><Button>Read more</Button></Link>
+                  <Button variant="ghost">
+                    <Bookmark height={20} width={20} className="mr-2" />
+                    Bookmark
+                  </Button>
+                </div>
               </div>
               <Image
                 src={`https://image.tmdb.org/t/p/original/${movie.backdrop_path}`}

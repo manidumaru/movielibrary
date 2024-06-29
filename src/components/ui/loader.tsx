@@ -1,6 +1,6 @@
-import { bouncy } from "ldrs";
+import { grid } from "ldrs";
 
-bouncy.register();
+grid.register();
 
 type LoaderProp = {
     size: Number,
@@ -8,5 +8,5 @@ type LoaderProp = {
 }
 
 export default function Loader({size, color}: LoaderProp) {
-  return <l-bouncy size={`${size}`} speed="2" color={color} ></l-bouncy>;
+  return <l-grid size={`${size}`} speed="2" color={color} ></l-grid>;
 }

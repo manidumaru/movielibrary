@@ -1,36 +1,69 @@
 "use client";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { MovieData } from "../types/types";
+import { MovieData } from "@/types/movie-type";
 import { StarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { dotSpinner } from "ldrs";
+
+import { useAtom, useSetAtom } from "jotai";
+
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
 import Image from "next/image";
 import Link from "next/link";
-import Loader from "@/components/ui/loader";
+import { loadingMovieListAtom, loadingImageLoadAtom, currentMoviePageAtom } from "../atoms/home-atoms";
 
 export type ErrorResponse = {
   detail: string;
 };
 
-dotSpinner.register();
-
 export default function MovieListSection() {
   const [movieData, setMovieData] = useState<MovieData>();
-  const [loading, setLoading] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useAtom(currentMoviePageAtom);
+  const setLoading = useSetAtom(loadingMovieListAtom)
+  const setImageLoading = useSetAtom(loadingImageLoadAtom)
+  const pages = [1,2,3,4,5,6,7]
+
+  function PaginationSection() {
+    return (
+      <Pagination>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationPrevious onClick={() => {setCurrentPage((prev) => {return prev-1})}}  />
+          </PaginationItem>
+          {pages.map((index) => {
+            return <PaginationItem key={index}>
+              <PaginationLink onClick={() => {setCurrentPage(index)}}>{index}</PaginationLink>
+            </PaginationItem>
+          })}
+          <PaginationItem>
+            <PaginationNext onClick={() => {setCurrentPage((prev) => {return prev+1})}} />
+          </PaginationItem>
+        </PaginationContent>
+        <p className="flex justify-center items-center p-2">Page: {currentPage}</p>
+      </Pagination>
+    );
+  }
 
   const fetchMovies = async () => {
     try {
       const response = await axios.get(
-        "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
+        `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${currentPage}`,
         {
           headers: {
             accept: "application/json",
@@ -48,7 +81,6 @@ export default function MovieListSection() {
   };
 
   useEffect(() => {
-    setLoading(true);
     const fetchMovieData = async () => {
       try {
         const movies = await fetchMovies();
@@ -58,11 +90,8 @@ export default function MovieListSection() {
       }
     };
     fetchMovieData();
-  }, []);
+  }, [currentPage, setCurrentPage]);
 
-  if (loading) {
-    return <Loader size={50} color="white" />
-  }
   return (
     <>
       <div className="flex flex-wrap justify-center space-y-10">
@@ -73,8 +102,8 @@ export default function MovieListSection() {
               href={`/movie/${movie.id}`}
               key={`${movie.id}`}
             >
-              <Card>
-                <CardContent className="relative w-full h-[320px] mb-4">
+              <Card className="w-[150px] sm:w-[180px] md:w-[220px] lg:w-[256px]">
+                <CardContent className="relative w-full h-[171px] sm:h-[205px] md:h-[250px] lg:h-[320px] mb-4">
                   <Image
                     src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
                     alt="Movie Image"
@@ -82,6 +111,7 @@ export default function MovieListSection() {
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority={true}
+                    onLoad={() => {setImageLoading(false)}}
                   />
                 </CardContent>
                 <CardTitle>
@@ -99,8 +129,8 @@ export default function MovieListSection() {
                   <p>{`${movie.vote_average.toPrecision(2)}`}</p>
                 </CardHeader>
                 <CardFooter className="flex justify-between">
-                  {movie.release_date}{" "}
-                  <Badge variant={"default"} className="opacity-60">
+                  <p className="text-xs md:text-sm">{movie.release_date}{" "}</p>
+                  <Badge variant={"default"} className="hidden md:block opacity-60">
                     Movie
                   </Badge>
                 </CardFooter>
@@ -108,7 +138,9 @@ export default function MovieListSection() {
             </Link>
           );
         })}
+        <PaginationSection />
       </div>
     </>
   );
 }
+
