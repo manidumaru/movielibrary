@@ -11,7 +11,6 @@ import { minutesToHours, formatLargeNumber } from "@/lib/utils";
 
 export default function MoviePage() {
   const [movieData, setMovieData] = useState<IndividualMovie>();
-  const [castData, setCastData] = useState();
   const [loading, setLoading] = useState<boolean>(false);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const pathname = usePathname();
@@ -28,7 +27,8 @@ export default function MoviePage() {
           Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
         },
       });
-
+      const result = response.data
+      return result
     } catch (err) {
       console.log(err);
     }
