@@ -22,3 +22,12 @@ export function formatLargeNumber(number: number): string {
     return `${number}`
   }
 }
+
+export function generateArray(value: number) {
+  const array = [];
+  const start = Math.max(1, value - 3); // Ensure the start value is at least 1
+  for (let i = 0; i < 7; i++) {
+    array.push(start + i);
+  }
+  return array;
+}

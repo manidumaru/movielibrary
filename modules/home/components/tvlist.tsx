@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { TVShow } from "@/types/tv-type";
 import Image from "next/image";
 import Link from "next/link";
+import { generateArray } from "@/lib/utils";
 
 import { StarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +34,7 @@ export default function TvList() {
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useAtom(currentTVPageAtom);
   const setImageLoading = useSetAtom(loadingImageLoadAtom);
-  const pages = [1, 2, 3, 4, 5, 6, 7];
+  const [pages, setPages] = useState<number[]>([]);
 
   function PaginationSection() {
     return (
@@ -98,6 +99,7 @@ export default function TvList() {
   };
 
   useEffect(() => {
+    setPages(generateArray(currentPage))
     setLoading(true);
     const fetchData = async () => {
       try {

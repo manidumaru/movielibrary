@@ -26,7 +26,12 @@ import {
 
 import Image from "next/image";
 import Link from "next/link";
-import { loadingMovieListAtom, loadingImageLoadAtom, currentMoviePageAtom } from "../atoms/home-atoms";
+import {
+  loadingMovieListAtom,
+  loadingImageLoadAtom,
+  currentMoviePageAtom,
+} from "../atoms/home-atoms";
+import { generateArray } from "@/lib/utils";
 
 export type ErrorResponse = {
   detail: string;
@@ -35,27 +40,49 @@ export type ErrorResponse = {
 export default function MovieListSection() {
   const [movieData, setMovieData] = useState<MovieData>();
   const [currentPage, setCurrentPage] = useAtom(currentMoviePageAtom);
-  const setLoading = useSetAtom(loadingMovieListAtom)
-  const setImageLoading = useSetAtom(loadingImageLoadAtom)
-  const pages = [1,2,3,4,5,6,7]
+  const setLoading = useSetAtom(loadingMovieListAtom);
+  const setImageLoading = useSetAtom(loadingImageLoadAtom);
+  const [pages, setPages] = useState<number[]>([]);
 
   function PaginationSection() {
     return (
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious onClick={() => {setCurrentPage((prev) => {return prev-1})}}  />
+            <PaginationPrevious
+              onClick={() => {
+                setCurrentPage((prev) => {
+                  return prev - 1;
+                });
+              }}
+            />
           </PaginationItem>
           {pages.map((index) => {
-            return <PaginationItem key={index}>
-              <PaginationLink onClick={() => {setCurrentPage(index)}}>{index}</PaginationLink>
-            </PaginationItem>
+            return (
+              <PaginationItem key={index}>
+                <PaginationLink
+                  onClick={() => {
+                    setCurrentPage(index);
+                  }}
+                >
+                  {index}
+                </PaginationLink>
+              </PaginationItem>
+            );
           })}
           <PaginationItem>
-            <PaginationNext onClick={() => {setCurrentPage((prev) => {return prev+1})}} />
+            <PaginationNext
+              onClick={() => {
+                setCurrentPage((prev) => {
+                  return prev + 1;
+                });
+              }}
+            />
           </PaginationItem>
         </PaginationContent>
-        <p className="flex justify-center items-center p-2">Page: {currentPage}</p>
+        <p className="flex justify-center items-center p-2">
+          Page: {currentPage}
+        </p>
       </Pagination>
     );
   }
@@ -81,6 +108,7 @@ export default function MovieListSection() {
   };
 
   useEffect(() => {
+    setPages(generateArray(currentPage))
     const fetchMovieData = async () => {
       try {
         const movies = await fetchMovies();
@@ -111,7 +139,9 @@ export default function MovieListSection() {
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     priority={true}
-                    onLoad={() => {setImageLoading(false)}}
+                    onLoad={() => {
+                      setImageLoading(false);
+                    }}
                   />
                 </CardContent>
                 <CardTitle>
@@ -129,8 +159,11 @@ export default function MovieListSection() {
                   <p>{`${movie.vote_average.toPrecision(2)}`}</p>
                 </CardHeader>
                 <CardFooter className="flex justify-between">
-                  <p className="text-xs md:text-sm">{movie.release_date}{" "}</p>
-                  <Badge variant={"default"} className="hidden md:block opacity-60">
+                  <p className="text-xs md:text-sm">{movie.release_date} </p>
+                  <Badge
+                    variant={"default"}
+                    className="hidden md:block opacity-60"
+                  >
                     Movie
                   </Badge>
                 </CardFooter>
@@ -143,4 +176,3 @@ export default function MovieListSection() {
     </>
   );
 }
-

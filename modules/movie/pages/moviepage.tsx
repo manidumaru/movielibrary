@@ -8,9 +8,12 @@ import Loader from "@/components/ui/loader";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { minutesToHours, formatLargeNumber } from "@/lib/utils";
+import { CastType } from "@/types/types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function MoviePage() {
   const [movieData, setMovieData] = useState<IndividualMovie>();
+  const [castData, setCastData] = useState<CastType[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const pathname = usePathname();
@@ -21,23 +24,8 @@ export default function MoviePage() {
 
   const fetchCastData = async () => {
     try {
-      const response = await axios.get(`https://api.themoviedb.org/3/movie/${movie}/credits?language=en-US`, {
-        headers: {
-          accept: "application/json",
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-        },
-      });
-      const result = response.data
-      return result
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const fetchMovieData = async () => {
-    try {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/movie/${movie}`,
+        `https://api.themoviedb.org/3/movie/${movie}/credits?language=en-US`,
         {
           headers: {
             accept: "application/json",
@@ -45,11 +33,38 @@ export default function MoviePage() {
           },
         }
       );
-      const data = response.data;
+      const result = response.data;
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const fetchMovieData = async () => {
+    const movieEndpoint = `https://api.themoviedb.org/3/movie/${movie}`;
+    const castEndpoint = `https://api.themoviedb.org/3/movie/${movie}/credits?language=en-US`;
+    try {
+      const [response1, response2] = await Promise.all([
+        axios.get(movieEndpoint, {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+          },
+        }),
+        axios.get(castEndpoint, {
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+          },
+        }),
+      ]);
+      const movieData = response1.data;
+      const castData = response2.data.cast;
       setLoading(false);
-      return data;
+      return [movieData, castData];
     } catch (error) {
       console.log(error);
+      return [null, null];
     }
   };
 
@@ -57,8 +72,9 @@ export default function MoviePage() {
     setLoading(true);
     const fetchData = async () => {
       try {
-        const data = await fetchMovieData();
-        setMovieData(data);
+        const [fetchedMovie, fetchedCast] = await fetchMovieData();
+        setMovieData(fetchedMovie);
+        setCastData(fetchedCast);
       } catch (error) {
         console.log(error);
       }
@@ -139,6 +155,16 @@ export default function MoviePage() {
                 <span key={`${company.id}`} className="text-xs">
                   {company.name}
                 </span>
+              );
+            })}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {castData?.slice(0, 14).map((cast) => {
+              return (
+                <Avatar key={cast.cast_id}>
+                  <AvatarImage src={`https://image.tmdb.org/t/p/original/${cast.profile_path}`} className="object-cover" />
+                  <AvatarFallback>N/A</AvatarFallback>
+                </Avatar>
               );
             })}
           </div>
