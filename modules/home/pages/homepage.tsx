@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import MovieListSection from "../components/movieList";
 import TrendindSection from "../components/trending";
@@ -8,14 +8,23 @@ import {
   loadingMovieListAtom,
   loadingTrendingAtom,
   loadingImageLoadAtom,
-  selectedTabAtom
+  selectedTabAtom,
 } from "../atoms/home-atoms";
 import Loader from "@/components/ui/loader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import axios from "axios";
+import { Movie, MovieData } from "@/types/movie-type";
+import { TVShow } from "@/types/tv-type";
 
-export default function HomePage() {
-  const selectedTab = useAtomValue(selectedTabAtom)
-  const setSelectedTab = useSetAtom(selectedTabAtom)
+interface HomePageProps {
+  trendingData: Movie[];
+  movieListData: MovieData;
+  tvListData: TVShow[];
+}
+
+export default function HomePage({trendingData, movieListData, tvListData}: HomePageProps) {
+  const selectedTab = useAtomValue(selectedTabAtom);
+  const setSelectedTab = useSetAtom(selectedTabAtom);
   const loadingMovieList = useAtomValue(loadingMovieListAtom);
   const loadingTrending = useAtomValue(loadingTrendingAtom);
   const loadingImage = useAtomValue(loadingImageLoadAtom);
@@ -30,17 +39,34 @@ export default function HomePage() {
           </div>
         ))}
       <div className="mb-6">
-        <TrendindSection />
-        <Tabs defaultValue={selectedTab} className="w-full flex flex-col justify-center items-center pt-4">
+        <TrendindSection trendingMovies={trendingData} />
+        <Tabs
+          defaultValue={selectedTab}
+          className="w-full flex flex-col justify-center items-center pt-4"
+        >
           <TabsList className="w-[350px]">
-            <TabsTrigger className="w-[175px]" value="movie">Movies</TabsTrigger>
-            <TabsTrigger className="w-[175px]" value="tv">TV Shows</TabsTrigger>
+            <TabsTrigger className="w-[175px]" value="movie">
+              Movies
+            </TabsTrigger>
+            <TabsTrigger className="w-[175px]" value="tv">
+              TV Shows
+            </TabsTrigger>
           </TabsList>
-          <TabsContent value="movie" onClick={() => {setSelectedTab("movie")}}>
-            <MovieListSection />
+          <TabsContent
+            value="movie"
+            onClick={() => {
+              setSelectedTab("movie");
+            }}
+          >
+            <MovieListSection movieData={movieListData} />
           </TabsContent>
-          <TabsContent value="tv" onClick={() => {setSelectedTab("tv")}}>
-            <TvList />
+          <TabsContent
+            value="tv"
+            onClick={() => {
+              setSelectedTab("tv");
+            }}
+          >
+            <TvList tvData={tvListData} />
           </TabsContent>
         </Tabs>
       </div>

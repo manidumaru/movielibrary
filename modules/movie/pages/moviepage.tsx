@@ -12,10 +12,15 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function MoviePage() {
+interface MoviePageProps {
+  movieData: IndividualMovie;
+  castData: CastType[];
+}
+
+export default function MoviePage({movieData, castData}: MoviePageProps) {
   const router = useRouter();
-  const [movieData, setMovieData] = useState<IndividualMovie>();
-  const [castData, setCastData] = useState<CastType[]>();
+  // const [movieData, setMovieData] = useState<IndividualMovie>();
+  // const [castData, setCastData] = useState<CastType[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   const pathname = usePathname();
@@ -24,47 +29,47 @@ export default function MoviePage() {
     return segments[segments.length - 1];
   }, [pathname]);
 
-  const fetchMovieData = async () => {
-    const movieEndpoint = `https://api.themoviedb.org/3/movie/${movie}`;
-    const castEndpoint = `https://api.themoviedb.org/3/movie/${movie}/credits?language=en-US`;
-    try {
-      const [response1, response2] = await Promise.all([
-        axios.get(movieEndpoint, {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-          },
-        }),
-        axios.get(castEndpoint, {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-          },
-        }),
-      ]);
-      const movieData = response1.data;
-      const castData = response2.data.cast;
-      setLoading(false);
-      return [movieData, castData];
-    } catch (error) {
-      console.log(error);
-      return [null, null];
-    }
-  };
+  // const fetchMovieData = async () => {
+  //   const movieEndpoint = `https://api.themoviedb.org/3/movie/${movie}`;
+  //   const castEndpoint = `https://api.themoviedb.org/3/movie/${movie}/credits?language=en-US`;
+  //   try {
+  //     const [response1, response2] = await Promise.all([
+  //       axios.get(movieEndpoint, {
+  //         headers: {
+  //           accept: "application/json",
+  //           Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+  //         },
+  //       }),
+  //       axios.get(castEndpoint, {
+  //         headers: {
+  //           accept: "application/json",
+  //           Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+  //         },
+  //       }),
+  //     ]);
+  //     const movieData = response1.data;
+  //     const castData = response2.data.cast;
+  //     setLoading(false);
+  //     return [movieData, castData];
+  //   } catch (error) {
+  //     console.log(error);
+  //     return [null, null];
+  //   }
+  // };
 
-  useEffect(() => {
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const [fetchedMovie, fetchedCast] = await fetchMovieData();
-        setMovieData(fetchedMovie);
-        setCastData(fetchedCast);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   setLoading(true);
+  //   const fetchData = async () => {
+  //     try {
+  //       const [fetchedMovie, fetchedCast] = await fetchMovieData();
+  //       setMovieData(fetchedMovie);
+  //       setCastData(fetchedCast);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const handleGoBack = () => {
     router.back()

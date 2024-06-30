@@ -1,3 +1,5 @@
+'use client'
+
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { TVShow } from "@/types/tv-type";
@@ -29,8 +31,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function TvList() {
-  const [tvData, setTvData] = useState<TVShow[]>();
+interface TvListProps {
+  tvData: TVShow[]
+}
+
+export default function TvList({tvData}: TvListProps) {
+  // const [tvData, setTvData] = useState<TVShow[]>();
   const [loading, setLoading] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useAtom(currentTVPageAtom);
   const setImageLoading = useSetAtom(loadingImageLoadAtom);
@@ -79,38 +85,38 @@ export default function TvList() {
     );
   }
 
-  const fetchTVShows = async () => {
-    try {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/tv/popular?language=en-US&page=${currentPage}`,
-        {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-          },
-        }
-      );
-      var data = response.data;
-      setLoading(false);
-      return data.results;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchTVShows = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `https://api.themoviedb.org/3/tv/popular?language=en-US&page=${currentPage}`,
+  //       {
+  //         headers: {
+  //           accept: "application/json",
+  //           Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+  //         },
+  //       }
+  //     );
+  //     var data = response.data;
+  //     setLoading(false);
+  //     return data.results;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    setPages(generateArray(currentPage))
-    setLoading(true);
-    const fetchData = async () => {
-      try {
-        const fetchedData = await fetchTVShows();
-        setTvData(fetchedData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, [currentPage, setCurrentPage]);
+  // useEffect(() => {
+  //   setPages(generateArray(currentPage))
+  //   setLoading(true);
+  //   const fetchData = async () => {
+  //     try {
+  //       const fetchedData = await fetchTVShows();
+  //       setTvData(fetchedData);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [currentPage, setCurrentPage]);
 
   return (
     <>

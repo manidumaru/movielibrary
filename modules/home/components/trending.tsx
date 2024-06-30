@@ -15,8 +15,6 @@ import { Poppins } from "next/font/google";
 import { Bookmark } from "lucide-react";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import axios from "axios";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -24,40 +22,44 @@ import { loadingTrendingAtom } from "../atoms/home-atoms";
 
 const poppins = Poppins({ weight: "300", subsets: ["latin"] });
 
-export default function TrendindSection() {
-  const [trendingMovies, setTrendingMovies] = useState<Movie[]>();
+interface TrendingSectionProps {
+  trendingMovies: Movie[]
+}
+
+export default function TrendindSection({trendingMovies}: TrendingSectionProps) {
+  // const [trendingMovies, setTrendingMovies] = useState<Movie[]>();
   const setLoading = useSetAtom(loadingTrendingAtom)
 
-  const fetchTrendingMovies = async () => {
-    try {
-      const response = await axios.get(
-        "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
-        {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-          },
-        }
-      );
-      const data = response.data;
-      setLoading(false)
-      return data.results;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchTrendingMovies = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "https://api.themoviedb.org/3/trending/movie/day?language=en-US",
+  //       {
+  //         headers: {
+  //           accept: "application/json",
+  //           Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+  //         },
+  //       }
+  //     );
+  //     const data = response.data;
+  //     setLoading(false)
+  //     return data.results;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const finalData = await fetchTrendingMovies();
-        setTrendingMovies(finalData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const finalData = await fetchTrendingMovies();
+  //       setTrendingMovies(finalData);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   return (
     <Carousel className="w-full cursor-grab">

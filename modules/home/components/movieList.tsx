@@ -1,5 +1,5 @@
 "use client";
-import axios, { AxiosError } from "axios";
+
 import { useEffect, useState } from "react";
 import { MovieData } from "@/types/movie-type";
 import { StarIcon } from "lucide-react";
@@ -30,14 +30,17 @@ import {
   loadingImageLoadAtom,
   currentMoviePageAtom,
 } from "../atoms/home-atoms";
-import { generateArray } from "@/lib/utils";
 
 export type ErrorResponse = {
   detail: string;
 };
 
-export default function MovieListSection() {
-  const [movieData, setMovieData] = useState<MovieData>();
+interface MovieListSectionProps {
+  movieData: MovieData
+}
+
+export default function MovieListSection({movieData}: MovieListSectionProps) {
+  // const [movieData, setMovieData] = useState<MovieData>();
   const [currentPage, setCurrentPage] = useAtom(currentMoviePageAtom);
   const setLoading = useSetAtom(loadingMovieListAtom);
   const setImageLoading = useSetAtom(loadingImageLoadAtom);
@@ -86,38 +89,38 @@ export default function MovieListSection() {
     );
   }
 
-  const fetchMovies = async () => {
-    try {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${currentPage}`,
-        {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-          },
-        }
-      );
-      const data = response.data;
-      setLoading(false);
-      return data;
-    } catch (err) {
-      const error = err as AxiosError<ErrorResponse>;
-      console.log(error);
-    }
-  };
+  // const fetchMovies = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `https://api.themoviedb.org/3/movie/popular?language=en-US&page=${currentPage}`,
+  //       {
+  //         headers: {
+  //           accept: "application/json",
+  //           Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+  //         },
+  //       }
+  //     );
+  //     const data = response.data;
+  //     setLoading(false);
+  //     return data;
+  //   } catch (err) {
+  //     const error = err as AxiosError<ErrorResponse>;
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    setPages(generateArray(currentPage))
-    const fetchMovieData = async () => {
-      try {
-        const movies = await fetchMovies();
-        setMovieData(movies);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchMovieData();
-  }, [currentPage, setCurrentPage]);
+  // useEffect(() => {
+  //   setPages(generateArray(currentPage))
+  //   const fetchMovieData = async () => {
+  //     try {
+  //       const movies = await fetchMovies();
+  //       setMovieData(movies);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchMovieData();
+  // }, [currentPage, setCurrentPage]);
 
   return (
     <>
