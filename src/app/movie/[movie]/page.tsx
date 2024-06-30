@@ -32,7 +32,7 @@ export default async function IndividualMovie({params}: MovieProps) {
 
 export async function generateStaticParams() {
   const movies = await axios.get(
-    "https://api.themoviedb.org/3/tv/popular?language=en-US&page=1",
+    "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
     {
       headers: {
         accept: "application/json",

@@ -7,8 +7,12 @@ import { TVShowDetail } from "@/types/tv-type";
 import Image from "next/image";
 import Loader from "@/components/ui/loader";
 
-export default function TVSowPage() {
-  const [TVDetail, setTVDetail] = useState<TVShowDetail>();
+interface TVShowPageProps {
+  TVDetail: TVShowDetail;
+}
+
+export default function TVSowPage({ TVDetail }: TVShowPageProps) {
+  // const [TVDetail, setTVDetail] = useState<TVShowDetail>();
   const pathname = usePathname();
   const [isLoadingData, setIsLoadingData] = useState<boolean>(false);
   const [isLoadingImage, setIsLoadingImage] = useState<boolean>(true);
@@ -17,48 +21,48 @@ export default function TVSowPage() {
     return segments[segments.length - 1];
   }, [pathname]);
 
-  const fetchTVShow = async () => {
-    try {
-      var response = await axios.get(
-        `https://api.themoviedb.org/3/tv/${tvShowId}?language=en-US`,
-        {
-          headers: {
-            accept: "application/json",
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
-          },
-        }
-      );
+  // const fetchTVShow = async () => {
+  //   try {
+  //     var response = await axios.get(
+  //       `https://api.themoviedb.org/3/tv/${tvShowId}?language=en-US`,
+  //       {
+  //         headers: {
+  //           accept: "application/json",
+  //           Authorization: `Bearer ${process.env.NEXT_PUBLIC_ACCESS_TOKEN}`,
+  //         },
+  //       }
+  //     );
 
-      const data = response.data;
-      setIsLoadingData(false);
-      console.log(data);
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  //     const data = response.data;
+  //     setIsLoadingData(false);
+  //     console.log(data);
+  //     return data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoadingData(true);
-        const fetchedData = await fetchTVShow();
-        if (!fetchedData) {
-          throw "no results";
-        }
-        setTVDetail(fetchedData);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setIsLoadingData(true);
+  //       const fetchedData = await fetchTVShow();
+  //       if (!fetchedData) {
+  //         throw "no results";
+  //       }
+  //       setTVDetail(fetchedData);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   return (
     <div className="h-dvh w-dvw relative">
       {(isLoadingData || isLoadingImage) && (
-        <div className="h-dvh w-dvw flex flex-col gap-2 justify-center items-center">
+        <div className="absolute h-dvh w-dvw flex flex-col gap-2 justify-center items-center">
           <Loader size={80} color="white" />
           <p>Fetching...</p>
         </div>
@@ -72,7 +76,7 @@ export default function TVSowPage() {
         }}
         className="object-cover opacity-20"
       />
-      
+      <p>{TVDetail.name}</p>
     </div>
   );
 }
