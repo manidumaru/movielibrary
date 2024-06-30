@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { MovieData } from "@/types/movie-type";
 import { StarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-
 import { useAtom, useSetAtom } from "jotai";
 
 import {

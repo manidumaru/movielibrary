@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import "../../modules/movie/styles/similar-movie-styles.css"
 
 const inter = Poppins({weight: "300", subsets: ["latin"] });
 

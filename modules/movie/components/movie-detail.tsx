@@ -3,6 +3,7 @@ import { CastType } from "@/types/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MovieOverView from "./movie-overview";
 import MovieCast from "./movie-cast";
+import SimilarMovie from "./movie-similar";
 
 interface MovieDetailProps {
   movieData: IndividualMovie;
@@ -17,7 +18,7 @@ export default function MovieDetail({ movieData, castData }: MovieDetailProps) {
     >
       <div
         id="movie-title"
-        className="flex flex-col w-full sm:items-center md:items-start"
+        className="flex flex-col w-full items-center md:items-start"
       >
         <p className="font-extrabold text-[24px] md:text-[30px] lg:text-[48px] min-[1500px]:text-[56px]">
           {movieData.title}
@@ -30,15 +31,19 @@ export default function MovieDetail({ movieData, castData }: MovieDetailProps) {
       >
         {/* need to flex-row at lg */}
         <Tabs defaultValue="overview">
-          <TabsList className="mb-2">
+          <TabsList className="mb-2 w-full md:w-auto">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="cast">Cast</TabsTrigger>
+            <TabsTrigger value="similar">Similar</TabsTrigger>
           </TabsList>
           <TabsContent value="overview" className="mt-2">
             <MovieOverView movieData={movieData} />
           </TabsContent>
           <TabsContent className="mt-2" value="cast">
             <MovieCast castData={castData} />
+          </TabsContent>
+          <TabsContent className="mt-2" value="similar">
+            <SimilarMovie id={movieData.id as number} />
           </TabsContent>
         </Tabs>
       </div>

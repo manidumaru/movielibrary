@@ -1,6 +1,6 @@
 import { IndividualMovie } from "@/types/movie-type";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, Rocket, Dot } from "lucide-react";
+import { Star, Clock, Rocket, Dot, ChevronsDown, ChevronsUp } from "lucide-react";
 import Link from "next/link";
 import { minutesToHours, formatLargeNumber } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -67,7 +67,7 @@ export default function MovieOverView({ movieData }: MovieOverViewProps) {
             id="release-date"
             className="flex gap-2 justify-center items-center text-sm"
           >
-            <div className="bg-red-300 h-4 w-12 md:h-6 md:w-6 rounded-full flex justify-center items-center">
+            <div className="bg-red-600 h-4 w-12 md:h-6 md:w-6 rounded-full flex justify-center items-center">
               <Rocket
                 stroke="black"
                 height={12}
@@ -102,8 +102,14 @@ export default function MovieOverView({ movieData }: MovieOverViewProps) {
         <Separator className="mb-2 opacity-50" />
         <div id="finance" className="text-sm mb-8">
           <h1 className="text-blue-300 text-lg tracking-[8px] mb-2">Finance</h1>
-          <p>Budget: {`${formatLargeNumber(movieData.budget as number)}`}</p>
-          <p>Revenue: {`${formatLargeNumber(movieData.revenue as number)}`}</p>
+          <div id="data" className="flex gap-4">
+            <p className="px-6 py-2 rounded-full flex gap-2 justify-center items-center bg-red-600 text-white">
+              <ChevronsDown />{`${formatLargeNumber(movieData.budget as number)}`} USD
+            </p>
+            <p className="px-6 py-2 rounded-full flex gap-2 justify-center items-center bg-green-300 text-black">
+              <ChevronsUp />{`${formatLargeNumber(movieData.revenue as number)}`} USD
+            </p>
+          </div>
         </div>
         <Separator className="my-2 opacity-50" />
         <div id="finance" className="text-sm mb-8">

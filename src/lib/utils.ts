@@ -13,11 +13,11 @@ export function minutesToHours(minutes: number): string {
 
 export function formatLargeNumber(number: number): string {
   if (number >= 1e9) {
-    return (number / 1e9).toFixed(1) + 'B';
+    return (number / 1e9).toFixed(1) + ' Billion';
   } else if (number >= 1e6) {
-    return (number / 1e6).toFixed(1) + 'M';
+    return (number / 1e6).toFixed(1) + ' Million';
   } else if (number >= 1e3) {
-    return (number / 1e3).toFixed(1) + 'K';
+    return (number / 1e3).toFixed(1) + ' Thousand';
   } else {
     return `${number}`
   }

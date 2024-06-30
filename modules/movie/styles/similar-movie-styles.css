@@ -1,0 +1,7 @@
+.figure-container:hover .figure-caption {
+    background: linear-gradient(180deg, rgba(21,22,24,0.24), #151618 100%);
+}
+
+.figure-caption:hover .figure-caption-title {
+    opacity:1
+}
